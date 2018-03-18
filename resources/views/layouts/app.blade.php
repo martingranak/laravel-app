@@ -12,6 +12,25 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        #map-container {
+            display: block;
+            height: 600px;
+        }
+
+        #map {
+            height: 100%;
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+    </style>
+
 </head>
 <body>
     <div id="app">
@@ -59,11 +78,12 @@
                 </div>
             </div>
         </nav>
+        @yield('content')
 
-        <main class="py-4">
-            @yield('content')
-        </main>
+        <!--<main class="py-4">
+        </main>-->
     </div>
+    @yield('map')
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
