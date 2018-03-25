@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>Tracking application</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
@@ -62,6 +62,14 @@
             .m-b-md {
                 margin-bottom: 30px;
             }
+
+            p {
+                text-align: left;
+            }
+
+            .text-container {
+                display: inline-block;
+            }
         </style>
     </head>
     <body>
@@ -79,7 +87,15 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Laravel
+                    <h3>Tracking application</h3>
+                </div>
+                <div>
+                    <h4>Overview</h4>
+                    <div class="text-container">
+                        <p>This application shows location of devices. You can track more devices.</p>
+                        <p>At the earliest you must be registered. Then you can add devices.</p>
+                        <p>This tracking application uses Google Maps API.</p>
+                    </div>
                 </div>
 
                 <div class="links">

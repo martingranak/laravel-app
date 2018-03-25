@@ -17,4 +17,28 @@ Route::get('/', function () {
 
 Auth::routes();
 
+Route::resource('post', 'PostController');
+
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::post('coords', 'HomeController@show')->name('coords');
+
+Route::get('coords', function () {
+    return view('coords');
+});
+
+Route::get('find', function () {
+    return view('coords');
+})->name('find');
+
+Route::get('device', 'DeviceController@index');
+
+Route::post('device', 'DeviceController@index')->name('device');
+
+Route::get('devices/{function}', 'devManagerController@show')->name('devices');
+
+Route::post('devices/all', 'devManagerController@show');
+
+Route::get('settings', function () {
+    return view('account_manager');
+});
