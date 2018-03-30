@@ -46,6 +46,7 @@ use Illuminate\Http\Request;
             <div class="submit-group">
                 {!! Form::submit('Show', array('id' => 'btn-find-coord', 'class' => 'btn', 'onclick' => 'event.preventDefault(); showUser(1);')) !!}
             </div>
+            {!! Form::close() !!}
         </div>
         <div>
             <script>

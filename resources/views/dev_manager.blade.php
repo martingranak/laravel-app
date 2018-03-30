@@ -166,16 +166,8 @@
             float: right;
         }
 
-        #create-form div, #edit-form div {
-            display: block;
-        }
-
-        #create-form .form-control, #edit-form .form-control, #create-form div label, #edit-form div label {
-            width: 150px;
-        }
-
-        #create-form input, #edit-form input {
-            width: 250px;
+        #edit-select {
+            width: 200px;
         }
 
         .qr-image {
@@ -187,10 +179,6 @@
 
         #qr-group {
             min-height: 300px;
-        }
-
-        #edit-group {
-            display: none;
         }
 
         .form-group p {
@@ -237,11 +225,11 @@
                     <li><a href="" id="myBtn" onclick="event.preventDefault(); openWindow();"><div class="dev_picture"><i class="fa fa-plus-square-o"></i></div>add device</a></li>
                     @foreach($devices as $device)
                         <li>
-                            <div class="left-part"><a href="" onclick="event.preventDefault(); openInfo('{{ $device->device_name }}','{{ $device->type_name }}','{{ $device->created_at }}', '{{ $device->updated_at }}');"><div class="dev_picture"><i class="{{ $device->picture }}"></i></div>
-                                    {{ $device->device_name }}</a></div>
+                            <div class="left-part"><a href="" onclick="event.preventDefault(); openInfo('{{ $device->device_name }}','{{ $device->type_name }}','{{ $device->created_at }}', '{{ $device->updated_at }}');">
+                                    <div class="dev_picture"><i class="{{ $device->picture }}"></i></div>{{ $device->device_name }}</a></div>
                             <a href="" onclick="event.preventDefault(); openEditWindow('{{ $device->device_id }}','{{ $device->device_name }}','{{ $device->type_id }}')"><i class="material-icons mini-icon">mode_edit</i>edit</a>
                             <a href="" onclick="event.preventDefault(); showQR('qr-{{ $device->device_id }}');"><i class="fa mini-icon material-icon">&#xf029;</i>QR code</a>
-                            <a href="" onclick="event.preventDefault();"><i class="material-icons mini-icon">delete_forever</i>delete</a>
+                            <a href="" onclick="event.preventDefault(); deleteDevice({{ $device->device_id }})"><i class="material-icons mini-icon">delete_forever</i>delete</a>
                         </li>
                     @endforeach
                 </ul>
@@ -255,56 +243,37 @@
     <div id="myModal" class="modal">
         <div class="modal-content" id="fr-group">
             <div class="modal-header">
-                <h5>Add new device</h5><span class="close" onclick="closeWindow();">&times;</span>
+                <span class="close" onclick="closeWindow();">&times;</span>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <form id="create-form" action="{{ url('devices').'/all' }}" method="post">
+                    {!! Form::open(array('route' => 'create_device', 'id' => 'edit-form')) !!}
                         <div>
+                            {!! Form::hidden('function', '', array('id' => 'function')) !!}
+                            {!! Form::hidden('dev-id', '', array('id' => 'edit-id')) !!}
                             {!! Form::label('dev-name', 'Device name')!!}
-                            {!! Form::text('dev-name-text'); !!}
+                            {!! Form::text('dev-name-text', '', array('id' => 'edit-text', 'required' => 'required')); !!}
                         </div>
                         <div>
                             {!! Form::label('dev-type', 'Device type')!!}
-                            {!! Form::select('dev-type-text', array(1 => 'Mobile', 2 => 'Laptop', 3 => 'Tablet', 4 => 'Others'), null, array('class' => 'form-control')); !!}
+                            {!! Form::select('dev-type-text', array(1 => 'Mobile', 2 => 'Laptop', 3 => 'Tablet', 4 => 'Others'), null, array('class' => 'form-control', 'id' => 'edit-select', 'required' => 'required')); !!}
                         </div>
                         <button class="btn btn-default-sm modal-footer" type="submit">
-                            Add
+                            Submit
                         </button>
-                    </form>
+                    {!! Form::close() !!}
                 </div>
             </div>
         </div>
+
         <div id="qr-group">
             @if($devices != null)
                 @foreach($devices as $device)
-                    <img class="qr-image" id="qr-{{ $device->device_id }}" src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl={{ str_replace(' ', '+', $device->device_name) }}"/>
+                    <img class="qr-image" id="qr-{{ $device->device_id }}" src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl={{ str_replace(' ', '_', \Auth::user()->name.\Auth::user()->id.'/'.$device->device_name) }}"/>
                 @endforeach
             @endif
         </div>
-        <div class="modal-content" id="edit-group">
-            <div class="modal-header">
-                <h5>Edit Device</h5><span class="close" onclick="closeWindow();">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <form id="edit-form" action="{{ url('devices').'/all' }}" method="post">
-                        <div>
-                            {!! Form::hidden('dev-id', '', array('id' => 'edit-id')) !!}
-                            {!! Form::label('dev-name', 'Device name')!!}
-                            {!! Form::text('dev-name-text', '', array('id' => 'edit-text')); !!}
-                        </div>
-                        <div>
-                            {!! Form::label('dev-type', 'Device type')!!}
-                            {!! Form::select('dev-type-text', array(1 => 'Mobile', 2 => 'Laptop', 3 => 'Tablet', 4 => 'Others'), null, array('class' => 'form-control', 'id' => 'edit-select')); !!}
-                        </div>
-                        <button class="btn btn-default-sm modal-footer" type="submit">
-                            Save
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
+
         <div class="modal-content" id="info-group">
             <div class="modal-header">
                 <h5>Device Info</h5><span class="close" onclick="closeWindow();">&times;</span>
@@ -324,26 +293,30 @@
         var modal = document.getElementById('myModal');
         var frGroup = document.getElementById('fr-group');
         var qrGroup = document.getElementById('qr-group');
-        var editGroup = document.getElementById('edit-group');
         var infoGroup = document.getElementById('info-group');
         var span = document.getElementsByClassName("close")[0];
+        var functionValue = document.getElementById('function');
         var qr_image;
 
         function openWindow() {
             modal.style.display = "block";
             frGroup.style.display = "inline-block";
             qrGroup.style.display = "none";
-            editGroup.style.display = "none";
             infoGroup.style.display = "none";
+
+            functionValue.value = 'create';
+            document.getElementById('edit-id').value = '';
+            document.getElementById('edit-text').value = '';
+            document.getElementById('edit-select').value = '';
         }
 
         function openEditWindow(id, name, type) {
             modal.style.display = "block";
-            frGroup.style.display = "none";
+            frGroup.style.display = "inline-block";
             qrGroup.style.display = "none";
-            editGroup.style.display = "inline-block";
             infoGroup.style.display = "none";
 
+            functionValue.value = 'edit';
             document.getElementById('edit-id').value = id;
             document.getElementById('edit-text').value = name;
             document.getElementById('edit-select').value = type;
@@ -353,7 +326,6 @@
             modal.style.display = "block";
             frGroup.style.display = "none";
             qrGroup.style.display = "block";
-            editGroup.style.display = "none";
             infoGroup.style.display = "none";
             qr_image = document.getElementById(qr_id);
             qr_image.style.display = "block";
@@ -363,13 +335,22 @@
             modal.style.display = "block";
             frGroup.style.display = "none";
             qrGroup.style.display = "none";
-            editGroup.style.display = "none";
             infoGroup.style.display = "inline-block";
 
             document.getElementById('info-name').innerHTML = name;
             document.getElementById('info-type').innerHTML = type;
             document.getElementById('info-created').innerHTML = createdAt;
             document.getElementById('info-updated').innerHTML = updatedAt;
+        }
+
+        function deleteDevice(id) {
+            if (confirm('Are you sure you want delete this device?')) {
+                functionValue.value = 'delete';
+                document.getElementById('edit-id').value = id;
+                document.getElementById("edit-form").submit();
+            } else {
+
+            }
         }
 
         function closeWindow() {
@@ -380,7 +361,6 @@
             if (event.target == modal || event.target == qrGroup) {
                 modal.style.display = "none";
                 frGroup.style.display = "none";
-                editGroup.style.display = "none";
                 infoGroup.style.display = "none";
                 if (qr_image != null) {
                     qr_image.style.display = "none";

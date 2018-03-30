@@ -52,4 +52,26 @@ class devManagerController extends Controller
         }
         return view('dev_manager')->with('devices', $devices);
     }
+
+    public function create()
+    {
+        $sysdate = \Carbon\Carbon::now();
+        if ($_POST['function'] == 'create') {
+            \DB::table('devices')->insert(
+                ['name' => $_POST['dev-name-text'], 'user_id' => \Auth::user()->id, 'type_id' => $_POST['dev-type-text'], 'created_at' => $sysdate->toDateTimeString(), 'updated_at' => $sysdate->toDateTimeString()]
+            );
+        } else if ($_POST['function'] == 'edit') {
+            \DB::table('devices')->where('device_id', $_POST['dev-id'])->update(
+                ['name' => $_POST['dev-name-text'], 'type_id' => $_POST['dev-type-text'], 'updated_at' => $sysdate->toDateTimeString()]
+            );
+        } else if ($_POST['function'] == 'delete') {
+            \DB::table('devices')->where('device_id', $_POST['dev-id'])->delete();
+        }
+
+        $devices = \DB::table('devices')->select('devices.device_id', 'devices.name as device_name', 'types.picture',
+            'types.name as type_name', 'devices.type_id', \DB::raw('DATE_FORMAT(devices.created_at, "%d. %m. %Y") as created_at'),
+            \DB::raw('DATE_FORMAT(devices.updated_at, "%d. %m. %Y") as updated_at'))->join('types', 'devices.type_id', '=', 'types.type_id')
+            ->where('devices.user_id', '=', \Auth::user()->id)->get();
+        return view('dev_manager')->with('devices', $devices);
+    }
 }

@@ -37,8 +37,8 @@ Route::post('device', 'DeviceController@index')->name('device');
 
 Route::get('devices/{function}', 'devManagerController@show')->name('devices');
 
-Route::post('devices/all', 'devManagerController@show');
+Route::post('devices/all', 'devManagerController@create')->name('create_device');
 
-Route::get('settings', function () {
-    return view('account_manager');
-});
+Route::get('settings', 'accountManagerController@index')->name('settings');
+
+Route::post('settings', 'accountManagerController@edit')->name('edit_user');
