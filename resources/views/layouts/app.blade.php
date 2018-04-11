@@ -114,7 +114,7 @@ use Illuminate\Support\Facades\DB;
                 @guest
                 @else
                 <?php
-                    $devices2 = DB::table('devices')->where('user_id', Auth::user()->id)->orderBy('type_id')->get();
+                    $devices2 = DB::table('devices')->where([['user_id', '=', Auth::user()->id], ['is_set', '=', 1]])->orderBy('type_id')->get();
                 ?>
 
                 <div class="form-group">

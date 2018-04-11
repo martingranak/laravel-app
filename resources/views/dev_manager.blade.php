@@ -229,7 +229,7 @@
                                     <div class="dev_picture"><i class="{{ $device->picture }}"></i></div>{{ $device->device_name }}</a></div>
                             <a href="" onclick="event.preventDefault(); openEditWindow('{{ $device->device_id }}','{{ $device->device_name }}','{{ $device->type_id }}')"><i class="material-icons mini-icon">mode_edit</i>edit</a>
                             <a href="" onclick="event.preventDefault(); showQR('qr-{{ $device->device_id }}');"><i class="fa mini-icon material-icon">&#xf029;</i>QR code</a>
-                            <a href="" onclick="event.preventDefault(); deleteDevice({{ $device->device_id }})"><i class="material-icons mini-icon">delete_forever</i>delete</a>
+                            <a href="" onclick="event.preventDefault(); deleteDevice({{ $device->device_id }}, {{ $device->is_set }})"><i class="material-icons mini-icon">delete_forever</i>delete</a>
                         </li>
                     @endforeach
                 </ul>
@@ -343,13 +343,15 @@
             document.getElementById('info-updated').innerHTML = updatedAt;
         }
 
-        function deleteDevice(id) {
-            if (confirm('Are you sure you want delete this device?')) {
-                functionValue.value = 'delete';
-                document.getElementById('edit-id').value = id;
-                document.getElementById("edit-form").submit();
+        function deleteDevice(id, is_set) {
+            if (is_set == 0) {
+                if (confirm('Are you sure you want delete this device?')) {
+                    functionValue.value = 'delete';
+                    document.getElementById('edit-id').value = id;
+                    document.getElementById("edit-form").submit();
+                }
             } else {
-
+                alert("This device is logged in.\nFirstly log out this device.");
             }
         }
 

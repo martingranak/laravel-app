@@ -17,7 +17,7 @@ class DeviceController extends Controller
                 'types.name as type_name', 'devices.type_id')->join('types', 'devices.type_id', '=', 'types.type_id')
                 ->where('devices.device_id', '=', $_POST['device_id'])->get();
             $device = json_decode($device, true);
-            return view('device')->with('device', $device);
+            return view('device')->with(['device' => $device]);
         } else {
             return view('home');
         }

@@ -21,7 +21,7 @@ Route::resource('post', 'PostController');
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::post('coords', 'HomeController@show')->name('coords');
+Route::post('coords', 'CoordsController@show')->name('coords');
 
 Route::get('coords', function () {
     return view('coords');

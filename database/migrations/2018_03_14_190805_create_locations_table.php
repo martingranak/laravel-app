@@ -20,8 +20,7 @@ class CreateLocationsTable extends Migration
             $table->double('latitude');
             $table->double('speed');
             $table->integer('satellite');
-
-            //$table->foreign('device_id')->references('device_id')->on('devices');
+            $table->double('scale');
             $table->primary(['device_id', 'created_at']);
 
         });

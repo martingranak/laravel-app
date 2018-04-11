@@ -18,6 +18,7 @@ class CreateDevicesTable extends Migration
             $table->string('name');
             $table->integer('user_id');
             $table->integer('type_id');
+            $table->boolean('is_set')->default(false);
             $table->timestamps();
 
             //$table->foreign('user_id')->references('id')->on('users');

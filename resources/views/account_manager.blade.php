@@ -150,10 +150,12 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    {!! Form::open(array('route' => 'create_device', 'id' => 'edit-form')) !!}
+                    {!! Form::open(array('route' => 'edit_user', 'id' => 'edit-form')) !!}
                     <div>
                         {!! Form::hidden('function', '', array('id' => 'function')) !!}
                         {!! Form::hidden('user-id', \Auth::user()->id, array('id' => 'user-id')) !!}
+                        {!! Form::label('current-pass', 'Password')!!}
+                        {!! Form::text('user-pass', '', array('id' => 'pass', 'type' => 'password', 'required' => 'required')); !!}
                         {!! Form::label('user-label', 'Device name')!!}
                         {!! Form::text('user-text', '', array('id' => 'edit-text', 'required' => 'required')); !!}
                     </div>
@@ -176,6 +178,7 @@
 
             functionValue.value = 'name';
             document.getElementById('edit-text').value = "{{ \Auth::user()->name }}";
+            document.getElementById('function').value = "name";
         }
 
         function editEmail() {
@@ -183,6 +186,7 @@
 
             functionValue.value = 'e-mail';
             document.getElementById('edit-text').value = "{{ \Auth::user()->email }}";
+            document.getElementById('function').value = "mail";
         }
 
         function editPassword() {
@@ -190,6 +194,7 @@
 
             functionValue.value = 'e-mail';
             document.getElementById('edit-text').value = '';
+            document.getElementById('function').value = "pass";
         }
 
         function closeWindow() {

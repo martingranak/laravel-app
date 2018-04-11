@@ -18,9 +18,8 @@ use Illuminate\Http\Request;
 
             <?php
             $currant_datetime = \Carbon\Carbon::now();
-            echo Form::getValueAttribute('to-present');
             ?>
-            {!! Form::open() !!}
+            {!! Form::open(array('route' => 'coords')) !!}
             {!! Form::hidden('device-id', $device[0]['device_id']) !!}
             <div>
                 {!! Form::label('from', 'From: ') !!}
@@ -44,50 +43,40 @@ use Illuminate\Http\Request;
             </div>
             <br>
             <div class="submit-group">
-                {!! Form::submit('Show', array('id' => 'btn-find-coord', 'class' => 'btn', 'onclick' => 'event.preventDefault(); showUser(1);')) !!}
+                {!! Form::submit('Show', array('id' => 'btn-find-coord', 'class' => 'btn')) !!}
             </div>
             {!! Form::close() !!}
         </div>
         <div>
             <script>
-                function showUser(str) {
-                    if (str == "") {
-                        document.getElementById("txtHint").innerHTML = "";
-                        return false;
+
+                function eqfeed_callback(results) {
+                    if (window.XMLHttpRequest) {
+                        // code for IE7+, Firefox, Chrome, Opera, Safari
+                        xmlhttp = new XMLHttpRequest();
                     } else {
-                        if (window.XMLHttpRequest) {
-                            // code for IE7+, Firefox, Chrome, Opera, Safari
-                            xmlhttp = new XMLHttpRequest();
-                        } else {
-                            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-                        }
-                        xmlhttp.onreadystatechange = function() {
-                            if (this.readyState == 4 && this.status == 200) {
-                                console.log('je zle');
-                                document.getElementById("txtHint").innerHTML = this.responseText;
-                            }
-                        };
-
-                        xmlhttp.open("GET","{{ url('find') }}?q="+str,true);
-                        xmlhttp.send();
-                        return true;
+                        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
                     }
-                }
+                    xmlhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            console.log('je zle');
+                            document.getElementById("txtHint").innerHTML = this.responseText;
+                        }
+                    };
 
-                /*function eqfeed_callback(results) {
-                    var coords;
+                    xmlhttp.open("GET","{{ url('find') }}?q={{ $device[0]['device_id'] }}",true);
+                    xmlhttp.send();
 
-                    for (var i = 0; i < coords; i++) {
-                        var latLng = new google.maps.LatLng(,);
+                    for (var i = 0; i < coords.length(); i++) {
+                        var latLng = new google.maps.LatLng(coords[i][0],coords[i][1]);
                         var marker = new google.maps.Marker({
                             position: latLng,
                             map: map
                         });
                     }
-                }*/
+                }
             </script>
         </div>
-        <div id="txtHint"><b>Person info will be listed here...</b></div>
     </nav>
 
     <script>
